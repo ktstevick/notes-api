@@ -5,5 +5,5 @@ class NoteSerializer(ModelSerializer):
     class Meta:
         model = Note
         fields = (
-            'id', 'body'
+            'id', 'body', 'rgb_red', 'rgb_blue', 'rgb_green'
         )

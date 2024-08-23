@@ -1,8 +1,10 @@
 export default function Note(props) {
+    const colorStr = 'rgb(' + props.red + ', ' + props.blue + ', ' + props.green + ')' 
+
     return (
         <div>
-            <div className="note-card">
-                <p>{props.body}</p>
+            <div className="note-card" style={{backgroundColor: colorStr}}>
+                <p >{props.body}</p>
             </div>
 
             <button
