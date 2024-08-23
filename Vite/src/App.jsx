@@ -7,7 +7,7 @@ function App() {
   const [notes, setNotes] = useState([]);
 
   const fetchNotes = () => {
-    fetch('https://jsonplaceholder.typicode.com/posts?_limit=6')
+    fetch('http://127.0.0.1:8000/notes/')
       .then((response) => response.json())
       .then((data) => setNotes(data))
   }
