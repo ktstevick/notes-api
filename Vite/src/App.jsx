@@ -1,41 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react'
 
+import NewNote from './components/newNote'
 import Note from './components/note'
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [interval, setInterval] = useState(1);
+  const [notes, setNotes] = useState([]);
+
+  const fetchNotes = () => {
+    fetch('https://jsonplaceholder.typicode.com/posts?_limit=6')
+      .then((response) => response.json())
+      .then((data) => setNotes(data))
+  }
+
+  useEffect(() => {
+    fetchNotes()
+  }, []);
+
+  const addNote = (body) => { // Needs refinement, always generates prop.id of 101
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      body: JSON.stringify({
+        body: body
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      setNotes((prevNotes) => [data, ...prevNotes])
+    })
+  };
+
+  const deleteNote = (id) => {
+    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+      method: 'DELETE'
+    })
+    .then((response) => {
+      if(response.status === 200) {
+        setNotes(
+          notes.filter((note) => {
+            return note.id !== id;
+          })
+        )
+      }
+    })
+  }
 
   return (
     <>
+      <h1>NOTE MANAGER</h1>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite, React, and Me</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + interval)}>
-          +
-        </button>
-        <p> count is {count} </p>
-        <button onClick={() => setCount((count) => count - interval)}>
-          -
-        </button>
-        <p>
-          currently counting by {interval}
-        </p>
-        <button onClick={() => setInterval((interval) => interval * 2)}>DOUBLE INTERVAL</button>
+        <NewNote addNote={addNote}/>
 
+<hr></hr>
+        <h2>Current Notes:</h2>
         <section className="notes-container">
-          <h2>Notes</h2>
-          <Note />
+          {notes.map((note) =>
+            <Note
+              key={note.id}
+              id={note.id}
+              body={note.body}
+
+              deleteNote={deleteNote}
+            />
+          )}
         </section>
       </div>
     </>

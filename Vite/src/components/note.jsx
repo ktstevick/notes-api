@@ -1,5 +1,15 @@
-export default function Note() {
+export default function Note(props) {
     return (
-        <div>Hello World!</div>
+        <div>
+            <div className="note-card">
+                <p>{props.body}</p>
+            </div>
+
+            <button
+                className="delete-button"
+                onClick={() => props.deleteNote(props.id)}>
+                X
+            </button>
+        </div>
     )
 }
